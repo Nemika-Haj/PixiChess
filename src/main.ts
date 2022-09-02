@@ -1,10 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import PixiInit from "./Bixi"
+import { initializePixiStageManager } from './PixiApp';
 
-createApp(App).mount('#app')
+// Mount the App from Vue 3
+createApp(App).mount('#app');
 
-document.onload = () => {
-    console.log("Hi")
-    PixiInit()
-}
+// Initialize Pixi Stage Manager
+initializePixiStageManager();
