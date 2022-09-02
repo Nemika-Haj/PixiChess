@@ -1,3 +1,4 @@
+import type { ListenerFn } from "eventemitter3";
 import * as PIXI from "pixi.js";
 import DragHandler from "./handlers/DragHandler";
 
@@ -5,6 +6,7 @@ const FRAME_SIZE: number = 800;
 const WHITE_COLOR: number = 0xdbdbdb;
 const BLACK_COLOR: number = 545454;
 const PAWN_SIZE: number = 80;
+const BOX_SIZE: number = 100;
 const PATH_TO_PAWNS: String = "assets/images/pawns/";
 
 type PAWN = {
@@ -52,8 +54,28 @@ export function initializePixiStageManager(): void {
   // Create Pixi Container
   const container: PIXI.Container = new PIXI.Container();
 
-  // Add Pixi Container in Stage of Pixi Application
-  app.stage.addChild(container);
+  Array(70).fill(true).forEach((_, i) => {
+    if((i+1)%2 != 0) return
+
+    const block: PIXI.Container = new PIXI.Container();
+    const blockGraphics: PIXI.Graphics = new PIXI.Graphics();
+
+    blockGraphics.beginFill(BLACK_COLOR);
+    blockGraphics.drawRect(0, 0, BOX_SIZE, BOX_SIZE);
+    blockGraphics.endFill();
+
+    block.addChild(blockGraphics);
+
+
+    block.x = BOX_SIZE * (i % 9);
+    block.y = BOX_SIZE * Math.floor(i/9);
+
+    container.addChild(block);
+
+  })
+
+    // Add Pixi Container in Stage of Pixi Application
+    app.stage.addChild(container);
 
   // Append the app in HTML <div id="app" />
   document.getElementById("app")?.appendChild(app.view);
@@ -80,6 +102,13 @@ function createPawnSprite(piece: String): PIXI.Sprite {
   sprite.anchor.set(.5);
   sprite.interactive = true;
   sprite.buttonMode = true;
+
+  const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(sprite);
+  sprite
+  .on('pointerdown', dragHandler.Start)
+  .on('pointerup', dragHandler.End)
+  .on('pointerupoutside', dragHandler.End)
+  .on('pointermove', dragHandler.Move);
 
   return sprite;
 }
