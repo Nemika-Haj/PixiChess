@@ -1,4 +1,4 @@
-import type { Application, InteractionData, InteractionEvent, IPointData, Sprite } from "pixi.js";
+import type { Application, DisplayObject, InteractionData, InteractionEvent, IPointData, Sprite } from "pixi.js";
 
 function clamp(num: number, min: number, max: number): number {
     return Math.min(Math.max(num, min), max)
@@ -34,6 +34,12 @@ export default function DragHandler(app: Application, sprite: Sprite) {
 
         // Return pawn's original index
         app.stage.setChildIndex(sprite, originalIndex);
+
+        // Check if the moved pawn overlapped another
+        const deadPawn: DisplayObject | undefined = app.stage.children.filter(child => child.name == "PAWN" && child != sprite).find(pawn => pawn.x == sprite.x && pawn.y == sprite.y);
+    
+        // Delete the overlapped pawn
+        if(deadPawn) app.stage.removeChild(deadPawn)
     }
 
     function Move() {

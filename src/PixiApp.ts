@@ -38,6 +38,7 @@ function createPawnSprite(app: Application, piece: String): PIXI.Sprite {
 
   // Create the Sprite from Texture
   const sprite = new PIXI.Sprite(texture);
+  sprite.name = "PAWN"
 
   // Set some properties for Sprite
   sprite.height = PAWN_SIZE;
