@@ -87,7 +87,6 @@ export function initializePixiStageManager(): void {
     block.y = BOX_SIZE * Math.floor(i / 9);
 
     container.addChild(block);
-
   })
 
   // Add Pixi Container in Stage of Pixi Application
@@ -109,7 +108,6 @@ export function initializePixiStageManager(): void {
     pawnSprite.position.set(50+100*(i%8), 50+100*yOffSet);
 
     app.stage.addChild(pawnSprite);
-
   });
 
   // Create Back Pawns
@@ -124,7 +122,5 @@ export function initializePixiStageManager(): void {
     pawnSprite.position.set(50+100*(i%8), 50+100*yOffSet);
 
     app.stage.addChild(pawnSprite);
-
   });
-
 }
