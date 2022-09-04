@@ -3,7 +3,8 @@ export enum PAWN_NAMES {
     KNIGHT = "Knight",
     BISHOP = "Bishop",
     KING = "King",
-    QUEEN = "Queen"
+    QUEEN = "Queen",
+    DEFAULT = "Pawn"
 }
 
 export enum PAWN_COLORS {
