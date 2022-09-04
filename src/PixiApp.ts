@@ -1,6 +1,8 @@
 import type { ListenerFn } from "eventemitter3";
 import * as PIXI from "pixi.js";
-import DragHandler from "./handlers/DragHandler";
+import DragHandler from "./lib/handlers/DragHandler";
+import type { PAWN } from "./lib/types"
+import { PAWN_COLORS, PAWN_NAMES } from "./lib/enums"
 
 const FRAME_SIZE: number = 800;
 const WHITE_COLOR: number = 0xdbdbdb;
@@ -8,24 +10,6 @@ const BLACK_COLOR: number = 545454;
 const PAWN_SIZE: number = 80;
 const BOX_SIZE: number = 100;
 const PATH_TO_PAWNS: String = "assets/images/pawns/";
-
-type PAWN = {
-  name: String,
-  color: String
-};
-
-enum PAWN_NAMES {
-  ROOK = "Rook",
-  KNIGHT = "Knight",
-  BISHOP = "Bishop",
-  KING = "King",
-  QUEEN = "Queen"
-}
-
-enum PAWN_COLORS {
-  BLACK = "Black",
-  WHITE = "White"
-}
 
 const pawns: Array<PAWN> = [
   {name: PAWN_NAMES.ROOK, color: PAWN_COLORS.BLACK}, 
@@ -39,6 +23,31 @@ const pawns: Array<PAWN> = [
   {name: PAWN_NAMES.KING, color: PAWN_COLORS.WHITE}, 
   {name: PAWN_NAMES.QUEEN, color: PAWN_COLORS.WHITE}, 
 ];
+
+function createPawnSprite(piece: String): PIXI.Sprite {
+  
+  // Import images and create the Textures
+  const texture = PIXI.Texture.from(PATH_TO_PAWNS+""+piece+".png");
+
+  // Create the Sprite from Texture
+  const sprite = new PIXI.Sprite(texture);
+
+  // Set some properties for Sprite
+  sprite.height = PAWN_SIZE;
+  sprite.width = PAWN_SIZE;
+  sprite.anchor.set(.5);
+  sprite.interactive = true;
+  sprite.buttonMode = true;
+
+  const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(sprite);
+  sprite
+  .on('pointerdown', dragHandler.Start)
+  .on('pointerup', dragHandler.End)
+  .on('pointerupoutside', dragHandler.End)
+  .on('pointermove', dragHandler.Move);
+
+  return sprite;
+}
 
 export function initializePixiStageManager(): void {
     
@@ -86,29 +95,4 @@ export function initializePixiStageManager(): void {
     let aSprite: PIXI.Sprite = createPawnSprite(pawn.color+""+pawn.name);
     container.addChild(aSprite);
   });
-}
-
-function createPawnSprite(piece: String): PIXI.Sprite {
-  
-  // Import images and create the Textures
-  const texture = PIXI.Texture.from(PATH_TO_PAWNS+""+piece+".png");
-
-  // Create the Sprite from Texture
-  const sprite = new PIXI.Sprite(texture);
-
-  // Set some properties for Sprite
-  sprite.height = PAWN_SIZE;
-  sprite.width = PAWN_SIZE;
-  sprite.anchor.set(.5);
-  sprite.interactive = true;
-  sprite.buttonMode = true;
-
-  const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(sprite);
-  sprite
-  .on('pointerdown', dragHandler.Start)
-  .on('pointerup', dragHandler.End)
-  .on('pointerupoutside', dragHandler.End)
-  .on('pointermove', dragHandler.Move);
-
-  return sprite;
 }
