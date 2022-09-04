@@ -1,17 +1,24 @@
-import type { InteractionData, InteractionEvent, IPointData, Sprite } from "pixi.js";
+import type { Application, InteractionData, InteractionEvent, IPointData, Sprite } from "pixi.js";
 
 function clamp(num: number, min: number, max: number): number {
     return Math.min(Math.max(num, min), max)
 }
 
-export default function DragHandler(sprite: Sprite) {
+export default function DragHandler(app: Application, sprite: Sprite) {
     let data: null | InteractionData = null;
     let dragging: boolean = false;
+    let originalIndex: number = 0;
 
     function Start(event: InteractionEvent) {
         data = event.data;
         dragging = true;
         sprite.alpha = .5;
+        
+        // Save initial pawn index
+        originalIndex = app.stage.getChildIndex(sprite);
+
+        // Set pawn on top for a clearer view
+        app.stage.setChildIndex(sprite, app.stage.children.length-1);
     }
 
     function End() {
@@ -24,6 +31,9 @@ export default function DragHandler(sprite: Sprite) {
         const snapY = clamp(Math.floor(sprite.y / 100)*100+50, 50, 750);
 
         sprite.position.set(snapX, snapY);
+
+        // Return pawn's original index
+        app.stage.setChildIndex(sprite, originalIndex);
     }
 
     function Move() {

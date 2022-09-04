@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import DragHandler from "./lib/handlers/DragHandler";
 import type { PAWN } from "./lib/types"
 import { PAWN_COLORS, PAWN_NAMES } from "./lib/enums"
+import type { Application } from "pixi.js";
 
 const FRAME_SIZE: number = 800;
 const WHITE_COLOR: number = 0xdbdbdb;
@@ -30,7 +31,7 @@ const pawns: Array<PAWN> = [
   { name: PAWN_NAMES.ROOK, color: PAWN_COLORS.WHITE },
 ];
 
-function createPawnSprite(piece: String): PIXI.Sprite {
+function createPawnSprite(app: Application, piece: String): PIXI.Sprite {
 
   // Import images and create the Textures
   const texture = PIXI.Texture.from(PATH_TO_PAWNS + "" + piece + ".png");
@@ -45,7 +46,7 @@ function createPawnSprite(piece: String): PIXI.Sprite {
   sprite.interactive = true;
   sprite.buttonMode = true;
 
-  const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(sprite);
+  const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(app, sprite);
   sprite
     .on('pointerdown', dragHandler.Start)
     .on('pointerup', dragHandler.End)
@@ -99,7 +100,7 @@ export function initializePixiStageManager(): void {
   Array(16).fill(true).forEach((_, i) => {
     const pawnColor = i > 7 ? PAWN_COLORS.WHITE : PAWN_COLORS.BLACK;
 
-    const pawnSprite: PIXI.Sprite = createPawnSprite(pawnColor+PAWN_NAMES.DEFAULT);
+    const pawnSprite: PIXI.Sprite = createPawnSprite(app, pawnColor+PAWN_NAMES.DEFAULT);
     pawnSprite.height = PAWN_SIZE;
     pawnSprite.width = PAWN_SIZE;
 
@@ -113,7 +114,7 @@ export function initializePixiStageManager(): void {
   // Create Back Pawns
   pawns.forEach((pawn, i) => {
 
-    const pawnSprite: PIXI.Sprite = createPawnSprite(pawn.color+pawn.name);
+    const pawnSprite: PIXI.Sprite = createPawnSprite(app, pawn.color+pawn.name);
     pawnSprite.height = PAWN_SIZE;
     pawnSprite.width = PAWN_SIZE;
 
