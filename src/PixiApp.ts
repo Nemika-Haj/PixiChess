@@ -33,13 +33,17 @@ export function initializePixiStageManager(): void {
   const app = new PIXI.Application({
     antialias: true,
     autoDensity: true,
-    backgroundColor: WHITE_COLOR,
+    transparent: true,
     height: FRAME_SIZE,
-    width: FRAME_SIZE
+    width: window.innerWidth,
   })
 
-  // Create Pixi Container
-  const container: PIXI.Container = new PIXI.Container();
+  // Create a Pixi Container for the pawns and the board tiles
+  const pawnContainer: PIXI.Container = new PIXI.Container();
+  pawnContainer.x = app.view.width / 4;
+
+  const boardContainer: PIXI.Container = new PIXI.Container();
+  boardContainer.x = app.view.width / 4;
 
   // Form Grid
   Array(70).fill(true).forEach((_, i) => {
@@ -58,11 +62,14 @@ export function initializePixiStageManager(): void {
     block.x = BOX_SIZE * (i % 9);
     block.y = BOX_SIZE * Math.floor(i / 9);
 
-    container.addChild(block);
+    if(block.x < 800) {
+      boardContainer.addChild(block);
+    }
   })
 
-  // Add Pixi Container in Stage of Pixi Application
-  app.stage.addChild(container);
+  // Add Pixi Containers in Stage of Pixi Application
+  app.stage.addChild(boardContainer);
+  app.stage.addChild(pawnContainer);
 
   // Append the app in HTML <div id="app" />
   document.getElementById("app")?.appendChild(app.view);
@@ -71,24 +78,25 @@ export function initializePixiStageManager(): void {
   Array(16).fill(true).forEach((_, i) => {
     const pawnColor = i > 7 ? PAWN_COLORS.WHITE : PAWN_COLORS.BLACK;
 
-    const pawnSprite: Pawn = new Pawn(app, { name: PAWN_NAMES.DEFAULT, color: pawnColor });
+    const pawnSprite: Pawn = new Pawn({ name: PAWN_NAMES.DEFAULT, color: pawnColor });
 
     const yOffSet: number = i > 7 ? 6 : 1;
-    
-    pawnSprite.position.set(50+100*(i%8), 50+100*yOffSet);
 
-    app.stage.addChild(pawnSprite);
+    pawnSprite.position.set(50 + 100 * (i % 8), 50 + 100 * yOffSet);
+
+    pawnContainer.addChild(pawnSprite);
+    
   });
 
   // Create Back Pawns
   pawns.forEach((pawn, i) => {
 
-    const pawnSprite: Pawn = new Pawn(app, pawn);
+    const pawnSprite: Pawn = new Pawn(pawn);
 
     const yOffSet: number = i > 7 ? 7 : 0;
-    
-    pawnSprite.position.set(50+100*(i%8), 50+100*yOffSet);
 
-    app.stage.addChild(pawnSprite);
+    pawnSprite.position.set(50 + 100 * (i % 8), 50 + 100 * yOffSet);
+
+    pawnContainer.addChild(pawnSprite);
   });
 }

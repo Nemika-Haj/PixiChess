@@ -10,7 +10,7 @@ export class Pawn extends Sprite {
     public figure: string;
     public color: string;
 
-    constructor(app: Application, pawn: PAWN) {
+    constructor(pawn: PAWN) {
         super(Texture.from(PATH_TO_PAWNS + pawn.color + pawn.name + ".png"));
         this.figure = pawn.name;
         this.color = pawn.color;
@@ -21,7 +21,7 @@ export class Pawn extends Sprite {
         this.interactive = true;
         this.buttonMode = true;
 
-        const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(app, this);
+        const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(this);
         this
             .on('pointerdown', dragHandler.Start)
             .on('pointerup', dragHandler.End)
