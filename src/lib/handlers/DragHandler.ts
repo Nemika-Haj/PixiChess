@@ -1,7 +1,7 @@
-import type { Sprite, DisplayObject, InteractionData, InteractionEvent, IPointData } from "pixi.js";
-import { OBJECT_NAMES, PAWN_COLORS } from "../enums";
+import { ObservablePoint, type DisplayObject, type InteractionData, type InteractionEvent, type IPointData } from "pixi.js";
+import { PAWN_COLORS } from "../enums";
 import { DeathContainer } from "../models/DeathContainer";
-import { Pawn } from "../models/Pawn";
+import { Pawn, DefaultPawn } from "../models/Pawn";
 
 function clamp(num: number, min: number, max: number): number {
     return Math.min(Math.max(num, min), max)
@@ -11,13 +11,13 @@ export default function DragHandler(sprite: Pawn) {
     let data: null | InteractionData = null;
     let dragging: boolean = false;
     let originalIndex: number = 0;
-    let originalPosition: { x: number, y: number };
+    let originalPosition: ObservablePoint<any>;
 
     function Start(event: InteractionEvent) {
         data = event.data;
         dragging = true;
         sprite.alpha = .5;
-        originalPosition = { x:sprite.x, y: sprite.y }
+        originalPosition = new ObservablePoint(() => null, sprite.position.scope, sprite.x, sprite.y);
         
         // Save initial pawn index
         originalIndex = sprite.parent.getChildIndex(sprite);
@@ -35,13 +35,25 @@ export default function DragHandler(sprite: Pawn) {
         const snapX = clamp(Math.floor(sprite.x / 100)*100+50, 50, 750);
         const snapY = clamp(Math.floor(sprite.y / 100)*100+50, 50, 750);
 
+        console.log("Call")
+
+        if(sprite instanceof DefaultPawn) {
+            
+            if(!sprite.validateMove(originalPosition, { x: snapX, y: snapY })) {
+                sprite.position.set(originalPosition.x, originalPosition.y);
+                return;
+            }
+
+            
+        }
+
         sprite.position.set(snapX, snapY);
 
         // Return pawn's original index
         sprite.parent.setChildIndex(sprite, originalIndex);
 
         // Check if the moved pawn overlapped another
-        const deadPawn: DisplayObject | undefined = sprite.parent.children.filter(child => child instanceof Pawn && child != sprite).find(pawn => pawn.x == sprite.x && pawn.y == sprite.y);
+        const deadPawn: DisplayObject | undefined = sprite.parent.children.filter(child => child instanceof Pawn && child != sprite).find(pawn => Pawn.matchPositions(sprite.position, pawn.position));
 
         if(deadPawn instanceof Pawn) {
             if (deadPawn.color == sprite.color) {

@@ -23,13 +23,13 @@ export class DeathContainer extends Container {
         });
 
         const blackCollector: Text = new Text("Collected White Pawns", textStyle);
-        blackCollector.position.set(100, 25)
+        blackCollector.position.set(100, 25);
 
-        const whiteCollector: Text = new Text("Collected Black Pawns", textStyle)
-        whiteCollector.position.set(100, 525)
+        const whiteCollector: Text = new Text("Collected Black Pawns", textStyle);
+        whiteCollector.position.set(100, 525);
 
-        this.addChild(blackCollector)
-        this.addChild(whiteCollector)
+        this.addChild(blackCollector);
+        this.addChild(whiteCollector);
     }
 
     public add(pawn: Pawn, bottom?: boolean) {

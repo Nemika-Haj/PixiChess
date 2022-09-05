@@ -3,9 +3,9 @@ import type { PAWN } from "./lib/types"
 import { PAWN_COLORS, PAWN_NAMES } from "./lib/enums"
 import { Pawn } from "./lib/models/Pawn";
 import { ContainerHandler } from "./lib/handlers/ContainerHandler";
+import { DefaultPawn } from "./lib/models/Pawn"
 
 const FRAME_SIZE: number = 800;
-const WHITE_COLOR: number = 0xdbdbdb;
 const BLACK_COLOR: number = 545454;
 const BOX_SIZE: number = 100;
 
@@ -79,7 +79,7 @@ export function initializePixiStageManager(): void {
   Array(16).fill(true).forEach((_, i) => {
     const pawnColor = i > 7 ? PAWN_COLORS.WHITE : PAWN_COLORS.BLACK;
 
-    const pawnSprite: Pawn = new Pawn({ name: PAWN_NAMES.DEFAULT, color: pawnColor });
+    const pawnSprite: DefaultPawn = new DefaultPawn(pawnColor);
 
     const yOffSet: number = i > 7 ? 6 : 1;
 
