@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import type { PAWN } from "./lib/types"
 import { PAWN_COLORS, PAWN_NAMES } from "./lib/enums"
 import { Pawn } from "./lib/models/Pawn";
+import { ContainerHandler } from "./lib/handlers/ContainerHandler";
 
 const FRAME_SIZE: number = 800;
 const WHITE_COLOR: number = 0xdbdbdb;
@@ -36,7 +37,7 @@ export function initializePixiStageManager(): void {
     transparent: true,
     height: FRAME_SIZE,
     width: window.innerWidth,
-  })
+  });
 
   // Create a Pixi Container for the pawns and the board tiles
   const pawnContainer: PIXI.Container = new PIXI.Container();
@@ -99,4 +100,6 @@ export function initializePixiStageManager(): void {
 
     pawnContainer.addChild(pawnSprite);
   });
+
+  (new ContainerHandler(app)).setupDeathContainer();
 }

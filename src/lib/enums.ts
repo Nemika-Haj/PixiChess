@@ -11,3 +11,7 @@ export enum PAWN_COLORS {
     BLACK = "Black",
     WHITE = "White"
 }
+
+export enum OBJECT_NAMES { 
+    DEATH_CONTAINER = "DeathContainer"
+}

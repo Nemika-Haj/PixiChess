@@ -1,4 +1,6 @@
-import type { DisplayObject, InteractionData, InteractionEvent, IPointData } from "pixi.js";
+import type { Sprite, DisplayObject, InteractionData, InteractionEvent, IPointData } from "pixi.js";
+import { OBJECT_NAMES, PAWN_COLORS } from "../enums";
+import { DeathContainer } from "../models/DeathContainer";
 import { Pawn } from "../models/Pawn";
 
 function clamp(num: number, min: number, max: number): number {
@@ -46,8 +48,17 @@ export default function DragHandler(sprite: Pawn) {
                 // If deadPawn is the same color as the dragged pawn, deletion
                 sprite.position.set(originalPosition.x, originalPosition.y);
             } else {
+
+                deadPawn.removeAllListeners();
+                deadPawn.buttonMode = false;
+
                 // Otherwise delete object
                 sprite.parent.removeChild(deadPawn);
+
+                const deathContainer: DisplayObject | undefined = sprite.parent.parent.children.find(e => e instanceof DeathContainer);
+                if(deathContainer instanceof DeathContainer) {
+                    deathContainer.add(deadPawn, deadPawn.color == PAWN_COLORS.BLACK)
+                }
             }
         }
     }

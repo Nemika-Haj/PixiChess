@@ -15,11 +15,7 @@ export class Pawn extends Sprite {
         this.figure = pawn.name;
         this.color = pawn.color;
 
-        this.height = PAWN_SIZE;
-        this.width = PAWN_SIZE;
-        this.anchor.set(.5);
-        this.interactive = true;
-        this.buttonMode = true;
+        Pawn.makeOptions(this)
 
         const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(this);
         this
@@ -29,4 +25,20 @@ export class Pawn extends Sprite {
             .on('pointermove', dragHandler.Move);
 
     }
+
+    static makeOptions(pawn: Pawn | Sprite) {
+        pawn.height = PAWN_SIZE;
+        pawn.width = PAWN_SIZE;
+        pawn.anchor.set(.5);
+        pawn.interactive = true;
+        pawn.buttonMode = true;
+    }
+
+    static fromTexture(texture: Texture): Sprite {
+        const sprite = new Sprite(texture)
+        Pawn.makeOptions(sprite)
+
+        return sprite
+    }
+
 }
