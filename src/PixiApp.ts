@@ -1,16 +1,12 @@
-import type { ListenerFn } from "eventemitter3";
 import * as PIXI from "pixi.js";
-import DragHandler from "./lib/handlers/DragHandler";
 import type { PAWN } from "./lib/types"
 import { PAWN_COLORS, PAWN_NAMES } from "./lib/enums"
-import type { Application } from "pixi.js";
+import { Pawn } from "./lib/models/Pawn";
 
 const FRAME_SIZE: number = 800;
 const WHITE_COLOR: number = 0xdbdbdb;
 const BLACK_COLOR: number = 545454;
-const PAWN_SIZE: number = 80;
 const BOX_SIZE: number = 100;
-const PATH_TO_PAWNS: String = "assets/images/pawns/";
 
 const pawns: Array<PAWN> = [
   { name: PAWN_NAMES.ROOK, color: PAWN_COLORS.BLACK },
@@ -30,32 +26,6 @@ const pawns: Array<PAWN> = [
   { name: PAWN_NAMES.KNIGHT, color: PAWN_COLORS.WHITE },
   { name: PAWN_NAMES.ROOK, color: PAWN_COLORS.WHITE },
 ];
-
-function createPawnSprite(app: Application, piece: String): PIXI.Sprite {
-
-  // Import images and create the Textures
-  const texture = PIXI.Texture.from(PATH_TO_PAWNS + "" + piece + ".png");
-
-  // Create the Sprite from Texture
-  const sprite = new PIXI.Sprite(texture);
-  sprite.name = "PAWN"
-
-  // Set some properties for Sprite
-  sprite.height = PAWN_SIZE;
-  sprite.width = PAWN_SIZE;
-  sprite.anchor.set(.5);
-  sprite.interactive = true;
-  sprite.buttonMode = true;
-
-  const dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn } = DragHandler(app, sprite);
-  sprite
-    .on('pointerdown', dragHandler.Start)
-    .on('pointerup', dragHandler.End)
-    .on('pointerupoutside', dragHandler.End)
-    .on('pointermove', dragHandler.Move);
-
-  return sprite;
-}
 
 export function initializePixiStageManager(): void {
 
@@ -101,9 +71,7 @@ export function initializePixiStageManager(): void {
   Array(16).fill(true).forEach((_, i) => {
     const pawnColor = i > 7 ? PAWN_COLORS.WHITE : PAWN_COLORS.BLACK;
 
-    const pawnSprite: PIXI.Sprite = createPawnSprite(app, pawnColor+PAWN_NAMES.DEFAULT);
-    pawnSprite.height = PAWN_SIZE;
-    pawnSprite.width = PAWN_SIZE;
+    const pawnSprite: Pawn = new Pawn(app, { name: PAWN_NAMES.DEFAULT, color: pawnColor });
 
     const yOffSet: number = i > 7 ? 6 : 1;
     
@@ -115,9 +83,7 @@ export function initializePixiStageManager(): void {
   // Create Back Pawns
   pawns.forEach((pawn, i) => {
 
-    const pawnSprite: PIXI.Sprite = createPawnSprite(app, pawn.color+pawn.name);
-    pawnSprite.height = PAWN_SIZE;
-    pawnSprite.width = PAWN_SIZE;
+    const pawnSprite: Pawn = new Pawn(app, pawn);
 
     const yOffSet: number = i > 7 ? 7 : 0;
     

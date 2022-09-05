@@ -1,18 +1,21 @@
 import type { Application, DisplayObject, InteractionData, InteractionEvent, IPointData, Sprite } from "pixi.js";
+import { Pawn } from "../models/Pawn";
 
 function clamp(num: number, min: number, max: number): number {
     return Math.min(Math.max(num, min), max)
 }
 
-export default function DragHandler(app: Application, sprite: Sprite) {
+export default function DragHandler(app: Application, sprite: Pawn) {
     let data: null | InteractionData = null;
     let dragging: boolean = false;
     let originalIndex: number = 0;
+    let originalPosition: { x: number, y: number };
 
     function Start(event: InteractionEvent) {
         data = event.data;
         dragging = true;
         sprite.alpha = .5;
+        originalPosition = { x:sprite.x, y: sprite.y }
         
         // Save initial pawn index
         originalIndex = app.stage.getChildIndex(sprite);
@@ -36,10 +39,17 @@ export default function DragHandler(app: Application, sprite: Sprite) {
         app.stage.setChildIndex(sprite, originalIndex);
 
         // Check if the moved pawn overlapped another
-        const deadPawn: DisplayObject | undefined = app.stage.children.filter(child => child.name == "PAWN" && child != sprite).find(pawn => pawn.x == sprite.x && pawn.y == sprite.y);
-    
-        // Delete the overlapped pawn
-        if(deadPawn) app.stage.removeChild(deadPawn)
+        const deadPawn: DisplayObject | undefined = app.stage.children.filter(child => child instanceof Pawn && child != sprite).find(pawn => pawn.x == sprite.x && pawn.y == sprite.y);
+
+        if(deadPawn instanceof Pawn) {
+            if (deadPawn.color == sprite.color) {
+                // If deadPawn is the same color as the dragged pawn, deletion
+                sprite.position.set(originalPosition.x, originalPosition.y)
+            } else {
+                // Otherwise delete object
+                app.stage.removeChild(deadPawn)
+            }
+        }
     }
 
     function Move() {
