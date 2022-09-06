@@ -122,15 +122,46 @@ export class RookPawn extends Pawn {
 
             for(let i = 1; i <= Math.abs(this.originalPosition.y-position.y)/100-1; i++) {
                 const encounteredPawn: DisplayObject | undefined = this.getOffsetPawn(0, yOffset*i);
-                if (encounteredPawn && encounteredPawn instanceof Pawn) return false; 
+                if (encounteredPawn) return false; 
             }
         } else {
             const xOffset = position.x > this.originalPosition.x ? 1 : -1;
 
             for(let i = 1; i <= Math.abs(this.originalPosition.x-position.x)/100-1; i++) {
                 const encounteredPawn: DisplayObject | undefined = this.getOffsetPawn(xOffset*i, 0);
-                if (encounteredPawn && encounteredPawn instanceof Pawn) return false; 
+                if (encounteredPawn) return false; 
             }
+        }
+
+        return true;
+    }
+}
+
+export class BishopPawn extends Pawn {
+
+    constructor(color: PawnColors | string) {
+        super({ name: PawnNames.BISHOP, color: color });
+    }
+
+    public validateMove(position: IPointData): boolean {
+        if(!Pawn.inBounds(position)) return false; 
+
+        if(!this.originalPosition) return false;
+
+        if(this.originalPosition.x == position.x || this.originalPosition.y == position.y) return false;
+        if(Math.abs(this.originalPosition.x-position.x) != Math.abs(this.originalPosition.y-position.y)) return false;
+
+        const blocksMoved: number = (this.originalPosition.y - position.y)/50;
+
+        let yOffset: number = blocksMoved > 0 ? -1 : 1;
+        let xOffset: number = (this.originalPosition.x - position.x)/50 > 0 ? -1 : 1;
+        
+        for(let i = 1; i < Math.abs(blocksMoved)-1; i++) {
+            let encounteredPawn: DisplayObject | undefined = this.getOffsetPawn(i*xOffset, i*yOffset);
+
+            console.log(i, encounteredPawn)
+
+            if(encounteredPawn) return false;
         }
 
         return true;

@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import type { PAWN } from "./lib/types"
 import { PawnColors, PawnNames } from "./lib/enums"
-import { Pawn, RookPawn } from "./lib/models/Pawn";
+import { BishopPawn, Pawn, RookPawn } from "./lib/models/Pawn";
 import { ContainerHandler } from "./lib/handlers/ContainerHandler";
 import { DefaultPawn } from "./lib/models/Pawn"
 
@@ -97,6 +97,9 @@ export function initializePixiStageManager(): void {
     switch(pawn.name) {
       case PawnNames.ROOK: 
         pawnSprite = new RookPawn(pawn.color);
+        break;
+      case PawnNames.BISHOP:
+        pawnSprite = new BishopPawn(pawn.color);
         break;
       default: pawnSprite = new Pawn(pawn);
     }
