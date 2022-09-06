@@ -216,3 +216,19 @@ export class KingPawn extends Pawn {
 
     }
 }
+
+export class KnightPawn extends Pawn {
+    constructor(color: PawnColors | string) {
+        super({ name: PawnNames.KNIGHT, color: color })
+    }
+
+    public validateMove(position: IPointData): boolean {
+        if(
+            (Math.abs( this.originalPosition!!.x - position.x ) == 200 && Math.abs( this.originalPosition!!.y - position.y ) == 100) ||
+            (Math.abs( this.originalPosition!!.y - position.y ) == 200 && Math.abs( this.originalPosition!!.x - position.x ) == 100)
+        ) return true;
+
+        return false;
+
+    }
+}
