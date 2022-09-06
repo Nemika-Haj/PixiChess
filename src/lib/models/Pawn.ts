@@ -199,3 +199,20 @@ export class QueenPawn extends Pawn {
     }
 
 }
+
+export class KingPawn extends Pawn {
+
+    constructor(color: PawnColors | string) {
+        super({ name: PawnNames.KING, color: color })
+    }
+
+    public validateMove(position: IPointData): boolean {
+        if(
+            Math.abs( this.originalPosition!!.x - position.x ) > 100 ||
+            Math.abs( this.originalPosition!!.y - position.y ) > 100
+        ) return false;
+
+        return true;
+
+    }
+}
