@@ -1,5 +1,5 @@
-import { ObservablePoint, type DisplayObject, type InteractionData, type InteractionEvent, type IPointData } from "pixi.js";
-import { PAWN_COLORS } from "../enums";
+import type { DisplayObject, InteractionData, InteractionEvent, IPointData } from "pixi.js";
+import { PawnColors } from "../enums";
 import { DeathContainer } from "../models/DeathContainer";
 import { Pawn, DefaultPawn } from "../models/Pawn";
 
@@ -11,13 +11,12 @@ export default function DragHandler(sprite: Pawn) {
     let data: null | InteractionData = null;
     let dragging: boolean = false;
     let originalIndex: number = 0;
-    let originalPosition: ObservablePoint<any>;
 
     function Start(event: InteractionEvent) {
         data = event.data;
         dragging = true;
         sprite.alpha = .5;
-        originalPosition = new ObservablePoint(() => null, sprite.position.scope, sprite.x, sprite.y);
+        sprite.originalPosition = { x: sprite.x, y: sprite.y }
         
         // Save initial pawn index
         originalIndex = sprite.parent.getChildIndex(sprite);
@@ -35,16 +34,9 @@ export default function DragHandler(sprite: Pawn) {
         const snapX = clamp(Math.floor(sprite.x / 100)*100+50, 50, 750);
         const snapY = clamp(Math.floor(sprite.y / 100)*100+50, 50, 750);
 
-        console.log("Call")
-
-        if(sprite instanceof DefaultPawn) {
-            
-            if(!sprite.validateMove(originalPosition, { x: snapX, y: snapY })) {
-                sprite.position.set(originalPosition.x, originalPosition.y);
-                return;
-            }
-
-            
+        if(sprite.validateMove && !sprite.validateMove({ x: snapX, y: snapY })) {
+            sprite.position.set(sprite.originalPosition?.x, sprite.originalPosition?.y);
+            return;
         }
 
         sprite.position.set(snapX, snapY);
@@ -58,7 +50,7 @@ export default function DragHandler(sprite: Pawn) {
         if(deadPawn instanceof Pawn) {
             if (deadPawn.color == sprite.color) {
                 // If deadPawn is the same color as the dragged pawn, deletion
-                sprite.position.set(originalPosition.x, originalPosition.y);
+                sprite.position.set(sprite.originalPosition?.x, sprite.originalPosition?.y);
             } else {
 
                 deadPawn.removeAllListeners();
@@ -69,7 +61,7 @@ export default function DragHandler(sprite: Pawn) {
 
                 const deathContainer: DisplayObject | undefined = sprite.parent.parent.children.find(e => e instanceof DeathContainer);
                 if(deathContainer instanceof DeathContainer) {
-                    deathContainer.add(deadPawn, deadPawn.color == PAWN_COLORS.BLACK)
+                    deathContainer.add(deadPawn, deadPawn.color == PawnColors.BLACK)
                 }
             }
         }

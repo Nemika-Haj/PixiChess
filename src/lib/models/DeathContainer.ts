@@ -1,5 +1,5 @@
 import { Application, Container, Sprite, Text, TextStyle } from "pixi.js";
-import { OBJECT_NAMES } from "../enums";
+import { Areas } from "../enums";
 import { Pawn } from "./Pawn";
 
 const containerDimensions = { x: 420, y: 100 };
@@ -11,7 +11,7 @@ export class DeathContainer extends Container {
 
     constructor(app: Application) {
         super()
-        this.name = OBJECT_NAMES.DEATH_CONTAINER;
+        this.name = Areas.DEATH_CONTAINER;
         this.x = app.view.width - containerDimensions.x - borderMargin;
 
         const textStyle: TextStyle = new TextStyle({

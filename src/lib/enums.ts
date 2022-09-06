@@ -1,4 +1,4 @@
-export enum PAWN_NAMES {
+export enum PawnNames {
     ROOK = "Rook",
     KNIGHT = "Knight",
     BISHOP = "Bishop",
@@ -7,11 +7,11 @@ export enum PAWN_NAMES {
     DEFAULT = "Pawn"
 }
 
-export enum PAWN_COLORS {
+export enum PawnColors {
     BLACK = "Black",
     WHITE = "White"
 }
 
-export enum OBJECT_NAMES { 
+export enum Areas { 
     DEATH_CONTAINER = "DeathContainer"
 }

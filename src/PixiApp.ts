@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import type { PAWN } from "./lib/types"
-import { PAWN_COLORS, PAWN_NAMES } from "./lib/enums"
-import { Pawn } from "./lib/models/Pawn";
+import { PawnColors, PawnNames } from "./lib/enums"
+import { Pawn, RookPawn } from "./lib/models/Pawn";
 import { ContainerHandler } from "./lib/handlers/ContainerHandler";
 import { DefaultPawn } from "./lib/models/Pawn"
 
@@ -10,22 +10,22 @@ const BLACK_COLOR: number = 545454;
 const BOX_SIZE: number = 100;
 
 const pawns: Array<PAWN> = [
-  { name: PAWN_NAMES.ROOK, color: PAWN_COLORS.BLACK },
-  { name: PAWN_NAMES.KNIGHT, color: PAWN_COLORS.BLACK },
-  { name: PAWN_NAMES.BISHOP, color: PAWN_COLORS.BLACK },
-  { name: PAWN_NAMES.QUEEN, color: PAWN_COLORS.BLACK },
-  { name: PAWN_NAMES.KING, color: PAWN_COLORS.BLACK },
-  { name: PAWN_NAMES.BISHOP, color: PAWN_COLORS.BLACK },
-  { name: PAWN_NAMES.KNIGHT, color: PAWN_COLORS.BLACK },
-  { name: PAWN_NAMES.ROOK, color: PAWN_COLORS.BLACK },
-  { name: PAWN_NAMES.ROOK, color: PAWN_COLORS.WHITE },
-  { name: PAWN_NAMES.KNIGHT, color: PAWN_COLORS.WHITE },
-  { name: PAWN_NAMES.BISHOP, color: PAWN_COLORS.WHITE },
-  { name: PAWN_NAMES.QUEEN, color: PAWN_COLORS.WHITE },
-  { name: PAWN_NAMES.KING, color: PAWN_COLORS.WHITE },
-  { name: PAWN_NAMES.BISHOP, color: PAWN_COLORS.WHITE },
-  { name: PAWN_NAMES.KNIGHT, color: PAWN_COLORS.WHITE },
-  { name: PAWN_NAMES.ROOK, color: PAWN_COLORS.WHITE },
+  { name: PawnNames.ROOK, color: PawnColors.BLACK },
+  { name: PawnNames.KNIGHT, color: PawnColors.BLACK },
+  { name: PawnNames.BISHOP, color: PawnColors.BLACK },
+  { name: PawnNames.QUEEN, color: PawnColors.BLACK },
+  { name: PawnNames.KING, color: PawnColors.BLACK },
+  { name: PawnNames.BISHOP, color: PawnColors.BLACK },
+  { name: PawnNames.KNIGHT, color: PawnColors.BLACK },
+  { name: PawnNames.ROOK, color: PawnColors.BLACK },
+  { name: PawnNames.ROOK, color: PawnColors.WHITE },
+  { name: PawnNames.KNIGHT, color: PawnColors.WHITE },
+  { name: PawnNames.BISHOP, color: PawnColors.WHITE },
+  { name: PawnNames.QUEEN, color: PawnColors.WHITE },
+  { name: PawnNames.KING, color: PawnColors.WHITE },
+  { name: PawnNames.BISHOP, color: PawnColors.WHITE },
+  { name: PawnNames.KNIGHT, color: PawnColors.WHITE },
+  { name: PawnNames.ROOK, color: PawnColors.WHITE },
 ];
 
 export function initializePixiStageManager(): void {
@@ -77,7 +77,7 @@ export function initializePixiStageManager(): void {
 
   // Create Front Pawns
   Array(16).fill(true).forEach((_, i) => {
-    const pawnColor = i > 7 ? PAWN_COLORS.WHITE : PAWN_COLORS.BLACK;
+    const pawnColor = i > 7 ? PawnColors.WHITE : PawnColors.BLACK;
 
     const pawnSprite: DefaultPawn = new DefaultPawn(pawnColor);
 
@@ -92,7 +92,14 @@ export function initializePixiStageManager(): void {
   // Create Back Pawns
   pawns.forEach((pawn, i) => {
 
-    const pawnSprite: Pawn = new Pawn(pawn);
+    let pawnSprite: Pawn;
+
+    switch(pawn.name) {
+      case PawnNames.ROOK: 
+        pawnSprite = new RookPawn(pawn.color);
+        break;
+      default: pawnSprite = new Pawn(pawn);
+    }
 
     const yOffSet: number = i > 7 ? 7 : 0;
 
