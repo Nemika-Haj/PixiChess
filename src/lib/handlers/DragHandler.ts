@@ -70,6 +70,13 @@ export default function DragHandler(sprite: Pawn) {
     function Move() {
         if (dragging) {
             const newPos: IPointData | undefined = data?.getLocalPosition(sprite.parent);
+
+            if(!Pawn.inBounds(newPos!!)) {
+                sprite.position.set(sprite.originalPosition?.x, sprite.originalPosition?.y)
+                End()
+                return;
+            }
+
             if (newPos) {
                 sprite.position.set(newPos.x, newPos.y);
             }

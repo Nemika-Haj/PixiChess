@@ -156,7 +156,7 @@ export class BishopPawn extends Pawn {
         let yOffset: number = blocksMoved > 0 ? -1 : 1;
         let xOffset: number = (this.originalPosition.x - position.x)/50 > 0 ? -1 : 1;
         
-        for(let i = 1; i < Math.abs(blocksMoved)-1; i++) {
+        for(let i = 1; i < Math.abs(blocksMoved)-2; i++) {
             let encounteredPawn: DisplayObject | undefined = this.getOffsetPawn(i*xOffset, i*yOffset);
 
             console.log(i, encounteredPawn)
@@ -166,4 +166,36 @@ export class BishopPawn extends Pawn {
 
         return true;
     }
+}
+
+export class QueenPawn extends Pawn {
+    
+    constructor(color: PawnColors | string) {
+        super({ name: PawnNames.QUEEN, color: color });
+    }
+
+    public validateMove(position: IPointData): boolean {
+        let movementPawn = new RookPawn(this.color);
+        movementPawn.visible = false;
+        this.parent.addChild(movementPawn);
+        movementPawn.originalPosition = this.originalPosition;
+        if(movementPawn.validateMove(position)) {
+            console.log("MOVE")
+            this.parent.removeChild(movementPawn);
+            return true;
+        }
+
+        movementPawn = new BishopPawn(this.color);
+        movementPawn.visible = false;
+        this.parent.addChild(movementPawn);
+        movementPawn.originalPosition = this.originalPosition;
+        if(movementPawn.validateMove(position)) {
+            console.log("MOVE")
+            this.parent.removeChild(movementPawn);
+            return true;
+        }
+
+        return false;
+    }
+
 }
