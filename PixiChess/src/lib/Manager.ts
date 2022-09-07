@@ -61,4 +61,4 @@ class HTMLHandler {
 }
 
 export const MultiUserManager = new MultiUserHandler();
-export const HTMLManager = new HTMLHandler()
+export const HTMLManager = new HTMLHandler();

@@ -145,7 +145,7 @@ export function initializePixiStageManager(): void {
       case PawnNames.KNIGHT:
         pawnSprite = new KnightPawn(pawn.color);
         break;
-      default: pawnSprite = new Pawn(pawn);
+      default: return;
     }
 
     const yOffSet: number = i > 7 ? 7 : 0;

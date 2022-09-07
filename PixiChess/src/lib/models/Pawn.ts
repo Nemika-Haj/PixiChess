@@ -8,7 +8,7 @@ import { v4 as makeId } from "uuid";
 const PATH_TO_PAWNS: String = "assets/images/pawns/";
 const PAWN_SIZE: number = 80;
 
-export class Pawn extends Sprite {
+export abstract class Pawn extends Sprite {
     public figure: string;
     public color: string;
     public originalPosition?: IPointData;
