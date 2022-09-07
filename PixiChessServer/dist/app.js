@@ -34,7 +34,6 @@ io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
     connectedSockets.push({ name: socketName, socket: socket });
     socket.broadcast.emit('message', Manager_1.LogManager.Log(`${socketName} has joined the room!`));
     socket.on('message', (message) => {
-        console.log(Manager_1.LogManager.chatLog);
         connectedSockets.forEach(connection => connection.socket.emit('message', Manager_1.LogManager.Log(`${socketName}: ${message}`)));
     });
     socket.on('movePawn', (fromPoint, toPoint) => {
@@ -48,6 +47,9 @@ io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
             actions = [];
         }
         socket.broadcast.emit('message', Manager_1.LogManager.Log(`${socketName} has left the room!`));
+    });
+    setInterval(() => {
+        connectedSockets.forEach(connection => connection.socket.emit('updateUsers', connectedSockets.length));
     });
 }));
 http.listen(3000, () => console.log("Listening on port 3000"));

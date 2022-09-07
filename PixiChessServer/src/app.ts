@@ -35,7 +35,6 @@ io.on('connection', async(socket: socketio.Socket) => {
     socket.broadcast.emit('message', LogManager.Log(`${socketName} has joined the room!`));
 
     socket.on('message', (message: string) => {
-        console.log(LogManager.chatLog)
         connectedSockets.forEach(connection => connection.socket.emit('message', LogManager.Log(`${socketName}: ${message}`)));
     });
 
@@ -55,6 +54,11 @@ io.on('connection', async(socket: socketio.Socket) => {
         socket.broadcast.emit('message', LogManager.Log(`${socketName} has left the room!`))
 
     })
+
+    setInterval(() => {
+        connectedSockets.forEach(connection => connection.socket.emit('updateUsers', connectedSockets.length))
+    }, 2000)
+
 })
 
 http.listen(3000, () => console.log("Listening on port 3000"));

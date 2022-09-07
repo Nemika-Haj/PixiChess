@@ -30,6 +30,10 @@ socket.on('connect', () => {
     pawn.position.set(point.x, point.y);
   })
 
+  socket.on('updateUsers', (users: number) => {
+    document.getElementById("userCount")!!.innerText = users.toString();
+  })
+
 })
 // Sockets
 
