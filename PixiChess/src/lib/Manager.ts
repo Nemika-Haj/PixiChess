@@ -1,8 +1,8 @@
-import { Container, type Application } from "pixi.js";
+import type { Container } from "pixi.js";
 import { io } from "socket.io-client";
 import JSConfetti from "js-confetti"
 import { Areas, PawnColors } from "./enums";
-import { Pawn } from "./models/Pawn";
+import { KingPawn, Pawn } from "./models/Pawn";
 
 // export const socket = io("http://192.168.1.78:3000/");
 export const socket = io("http://localhost:3000/");
@@ -11,13 +11,13 @@ export namespace GameManager {
     // @ts-ignore
     export function update(pawnRemoved: Pawn, pawnContainer: Container) {
         const gameState = {
-            whitePawns: pawnContainer.children.filter((pawn) => pawn instanceof Pawn && pawn.color == PawnColors.WHITE).length,
-            blackPawns: pawnContainer.children.filter((pawn) => pawn instanceof Pawn && pawn.color == PawnColors.BLACK).length,
+            whiteKing: pawnContainer.children.find(e => e instanceof KingPawn && e.color == PawnColors.WHITE),
+            blackKing: pawnContainer.children.find(e => e instanceof KingPawn && e.color == PawnColors.BLACK),
             hasEnded: false
         };
 
-        if (gameState.whitePawns <= 0 || gameState.blackPawns <= 0) {
-            const winner: string = gameState.whitePawns > 0 ? "White" : "Black";
+        if (!gameState.whiteKing || !gameState.blackKing) {
+            const winner: string = gameState.whiteKing ? "White" : "Black";
             gameState.hasEnded = true;
 
             const confetti = new JSConfetti();
