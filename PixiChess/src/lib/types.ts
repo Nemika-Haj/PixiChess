@@ -1,4 +1,4 @@
-export type PAWN = {
+export type PawnType = {
     name: string,
     color: string
 };

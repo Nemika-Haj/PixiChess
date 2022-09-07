@@ -1,76 +1,43 @@
 import * as PIXI from "pixi.js";
-import type { PAWN } from "./lib/types"
+import type { PawnType } from "./lib/types"
 import { PawnColors, PawnNames } from "./lib/enums"
 import { BishopPawn, KingPawn, KnightPawn, Pawn, QueenPawn, RookPawn } from "./lib/models/Pawn";
 import { ContainerHandler } from "./lib/handlers/ContainerHandler";
 import { DefaultPawn } from "./lib/models/Pawn"
 
-import { socket } from "./lib/Manager"
-import HTMLSetup from "./HTMLSetup";
+import { HTMLManager, socket } from "./lib/Manager"
 
 // Make sockets
 let boardedPawns: Pawn[] = [];
 
 
 socket.on('connect', () => {
-  console.log("connected!")
-  console.log(socket.connected)
-
-  socket.on('message', (message: string) => {
-    const newP = document.createElement("p");
-    const text = document.createTextNode(message);
-    newP.appendChild(text);
-
-    const messageContainer = document.getElementById("messageContainer");
-
-    messageContainer?.appendChild(newP);
-    messageContainer!!.scrollTop = messageContainer!!.scrollHeight;
-
-  })
+  socket.on('message', HTMLManager.addMessage);
 
   socket.on('movePawn', (fromPoint: PIXI.IPointData, point: PIXI.IPointData) => {
     const pawn: Pawn | undefined = boardedPawns.find(pawn => fromPoint.x == pawn.x && fromPoint.y == pawn.y);
 
-    console.log(fromPoint, point)
-    console.log(!pawn)
-    if(!pawn) return
-    console.log("a")
+    if(!pawn) return;
 
     pawn.originalPosition = { x: pawn.x, y: pawn.y }
-  
     const deadPawn: Pawn | undefined = boardedPawns.find(dp => point.x == dp.x && point.y == dp.y);
 
     if(deadPawn) {
-      boardedPawns = boardedPawns.filter(p => p != deadPawn)
-      deadPawn.parent.removeChild(deadPawn)
+      boardedPawns = boardedPawns.filter(p => p != deadPawn);
+      deadPawn.parent.removeChild(deadPawn);
     }
 
-    pawn.position.set(point.x, point.y)
+    pawn.position.set(point.x, point.y);
   })
 
 })
-
-const chatContainer = document.createElement("div");
-chatContainer.id = "chatBox"
-chatContainer.innerHTML = `
-<div ="connectedContainer">
-  <div id="messageContainer">
-  </div>
-
-  <form style="align-self:flex-start;" id="submitForm">
-    <input id="messageInput" />
-    <button type="submit" style="display: none;" />
-  </form>
-</div>
-</div>
-`;
 // Sockets
 
 const FRAME_SIZE: number = 800;
 const BLACK_COLOR: number = 545454;
 const BOX_SIZE: number = 100;
 
-const pawns: Array<PAWN> = [
+const pawns: Array<PawnType> = [
   { name: PawnNames.ROOK, color: PawnColors.BLACK },
   { name: PawnNames.KNIGHT, color: PawnColors.BLACK },
   { name: PawnNames.BISHOP, color: PawnColors.BLACK },
@@ -134,9 +101,9 @@ export function initializePixiStageManager(): void {
   app.stage.addChild(pawnContainer);
 
   // Append the app and chatComponent in HTML <div id="app" />
-  document.getElementById("app")?.appendChild(chatContainer);
+  document.getElementById("app")?.appendChild(HTMLManager.chatContainer);
   document.getElementById("app")?.appendChild(app.view);
-  HTMLSetup(socket);
+  HTMLManager.setupMessageHandler()
 
   // Create Front Pawns
   Array(16).fill(true).forEach((_, i) => {

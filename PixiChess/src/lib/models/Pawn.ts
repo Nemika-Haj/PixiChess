@@ -1,6 +1,6 @@
 import type { ListenerFn } from "eventemitter3";
 import { DisplayObject, ObservablePoint, Sprite, Texture, type IPointData } from "pixi.js";
-import type { PAWN } from "../types";
+import type { PawnType } from "../types";
 import DragHandler from "../handlers/DragHandler";
 import { PawnColors, PawnNames } from "../enums";
 import { v4 as makeId } from "uuid";
@@ -15,7 +15,7 @@ export class Pawn extends Sprite {
     public id: string;
     public dragHandler: { Start: ListenerFn, Move: ListenerFn, End: ListenerFn };
 
-    constructor(pawn: PAWN) {
+    constructor(pawn: PawnType) {
         super(Texture.from(PATH_TO_PAWNS + pawn.color + pawn.name + ".png"));
         this.figure = pawn.name;
         this.color = pawn.color;

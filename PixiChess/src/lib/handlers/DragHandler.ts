@@ -1,6 +1,6 @@
 import type { DisplayObject, InteractionData, InteractionEvent, IPointData } from "pixi.js";
 import { PawnColors } from "../enums";
-import { MultiUserManager, otherUserDrag, socket } from "../Manager";
+import { MultiUserManager, socket } from "../Manager";
 import { DeathContainer } from "../models/DeathContainer";
 import { Pawn } from "../models/Pawn";
 
