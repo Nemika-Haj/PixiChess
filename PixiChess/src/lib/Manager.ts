@@ -1,7 +1,36 @@
+import { Container, type Application } from "pixi.js";
 import { io } from "socket.io-client";
+import JSConfetti from "js-confetti"
+import { Areas, PawnColors } from "./enums";
+import { Pawn } from "./models/Pawn";
 
 // export const socket = io("http://192.168.1.78:3000/");
 export const socket = io("http://localhost:3000/");
+
+export namespace GameManager {
+    // @ts-ignore
+    export function update(pawnRemoved: Pawn, pawnContainer: Container) {
+        const gameState = {
+            whitePawns: pawnContainer.children.filter((pawn) => pawn instanceof Pawn && pawn.color == PawnColors.WHITE).length,
+            blackPawns: pawnContainer.children.filter((pawn) => pawn instanceof Pawn && pawn.color == PawnColors.BLACK).length,
+            hasEnded: false
+        };
+
+        if (gameState.whitePawns <= 0 || gameState.blackPawns <= 0) {
+            const winner: string = gameState.whitePawns > 0 ? "White" : "Black";
+            gameState.hasEnded = true;
+
+            const confetti = new JSConfetti();
+
+            setInterval(() => confetti.addConfetti(), 1000);
+            setTimeout(() => {
+                location.reload()
+            }, 5000);
+
+            alert(`${winner} has won the game!`);
+        }
+    }
+}
 
 class MultiUserHandler {
     public using: boolean = false;

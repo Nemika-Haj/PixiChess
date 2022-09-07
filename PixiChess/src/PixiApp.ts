@@ -1,11 +1,10 @@
 import * as PIXI from "pixi.js";
 import type { PawnType } from "./lib/types"
-import { PawnColors, PawnNames } from "./lib/enums"
+import { Areas, PawnColors, PawnNames } from "./lib/enums"
 import { BishopPawn, KingPawn, KnightPawn, Pawn, QueenPawn, RookPawn } from "./lib/models/Pawn";
 import { ContainerHandler } from "./lib/handlers/ContainerHandler";
 import { DefaultPawn } from "./lib/models/Pawn"
-
-import { HTMLManager, socket } from "./lib/Manager"
+import { HTMLManager, socket, GameManager } from "./lib/Manager"
 
 // Make sockets
 let boardedPawns: Pawn[] = [];
@@ -61,7 +60,7 @@ const pawns: Array<PawnType> = [
 ];
 
 export function initializePixiStageManager(): void {
-
+  
   // Create the new Pixi Application with specific dimensions and properties
   const app = new PIXI.Application({
     antialias: true,
@@ -74,6 +73,8 @@ export function initializePixiStageManager(): void {
   // Create a Pixi Container for the pawns and the board tiles
   const pawnContainer: PIXI.Container = new PIXI.Container();
   pawnContainer.x = app.view.width / 4;
+  pawnContainer.name = Areas.PAWN_CONTAINER;
+  pawnContainer.on('childRemoved', GameManager.update);
 
   const boardContainer: PIXI.Container = new PIXI.Container();
   boardContainer.x = app.view.width / 4;

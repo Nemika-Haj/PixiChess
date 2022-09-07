@@ -13,5 +13,6 @@ export enum PawnColors {
 }
 
 export enum Areas { 
-    DEATH_CONTAINER = "DeathContainer"
+    DEATH_CONTAINER = "DeathContainer",
+    PAWN_CONTAINER = "PawnContainer"
 }
