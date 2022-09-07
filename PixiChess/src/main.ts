@@ -1,5 +1,5 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 import { initializePixiStageManager } from './PixiApp';
 
 // Mount the App from Vue 3
