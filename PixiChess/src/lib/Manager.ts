@@ -22,7 +22,7 @@ export namespace GameManager {
 
             const confetti = new JSConfetti();
 
-            setInterval(() => confetti.addConfetti(), 1000);
+            setInterval(() => confetti.addConfetti(), 500);
             setTimeout(() => {
                 location.reload()
             }, 5000);
